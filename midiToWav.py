@@ -3,7 +3,7 @@ from midi2audio import FluidSynth
 
 def midi_to_wav(midi_file, soundfont_file, output_wav):
     try:
-        fluidsynth_executable = "insert here fluidSynth.exe path"
+        fluidsynth_executable = "insert here path for fluidSinth.exe"
         fs = FluidSynth(soundfont_file)
 
         # Construct the subprocess command

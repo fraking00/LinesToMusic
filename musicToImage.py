@@ -2,41 +2,10 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 import cv2
+from PIL import Image, ImageTk
 from grayscaleToMidi import grayscale_to_midi
 from midiToWav import midi_to_wav
 import os
-from music21 import stream  # Import the music21 library and stream object
-from music21.note import Note
-
-# Define a function to generate a simple polyphonic melody
-def generate_polyphonic_melody(output_midi_filename):
-    # Create a stream to hold the polyphonic composition
-    composition = stream.Stream()
-
-    # Create two simple melodies (voices)
-    melody1 = stream.Part()
-    melody2 = stream.Part()
-
-    # Define the notes for each melody
-    notes1 = ["C4", "E4", "G4", "A4", "C5"]
-    notes2 = ["E3", "G3", "B3", "C4", "E4"]
-
-    # Add notes to the first melody
-    for note_name in notes1:
-        note = Note(note_name)
-        melody1.append(note)
-
-    # Add notes to the second melody
-    for note_name in notes2:
-        note = Note(note_name)
-        melody2.append(note)
-
-    # Add the melodies to the composition
-    composition.append(melody1)
-    composition.append(melody2)
-
-    # Save the composition to a MIDI file
-    composition.write("midi", output_midi_filename)
 
 # Update your convert_image function to include the polyphonic melody generation
 def convert_image():
@@ -67,9 +36,6 @@ def convert_image():
         soundfont_file = 'D:/music_to_images/OPLLandOPLL2DrumFix2.sf2'
         midi_to_wav(output_midi, soundfont_file, output_wav)
 
-        # Generate a simple polyphonic melody
-        generate_polyphonic_melody(output_midi)
-
         messagebox.showinfo("Conversion Complete", "Image to MIDI to WAV conversion completed successfully.")
     except FileNotFoundError as e:
         messagebox.showerror("Error", str(e))
@@ -79,6 +45,17 @@ def convert_image():
 # Create the main application window
 app = tk.Tk()
 app.title("Image to MIDI Converter")
+
+# Load the background image
+background_image = Image.open("background_image.jpg")  # Replace with your image path
+background_photo = ImageTk.PhotoImage(background_image)
+
+# Create a Canvas widget to display the background image
+canvas = tk.Canvas(app, width=background_image.width, height=background_image.height)
+canvas.pack()
+
+# Display the background image on the Canvas
+canvas.create_image(0, 0, anchor=tk.NW, image=background_photo)
 
 # Create and place labels, input fields, and buttons
 label_image_path = tk.Label(app, text="Enter the path to the image you want to analyze (e.g., 'input_image.jpg'):")
@@ -92,6 +69,8 @@ entry_output_midi = tk.Entry(app)
 label_output_wav = tk.Label(app, text="Enter the name for the output WAV file (e.g., 'output.wav'):")
 entry_output_wav = tk.Entry(app)
 convert_button = tk.Button(app, text="Convert", command=convert_image)
+exit_button = tk.Button(app, text="Exit", command=app.quit)  # Add Exit button and define exit function
+
 
 label_image_path.pack()
 entry_image_path.pack()
@@ -104,5 +83,6 @@ entry_output_midi.pack()
 label_output_wav.pack()
 entry_output_wav.pack()
 convert_button.pack()
+exit_button.pack()
 
 app.mainloop()
